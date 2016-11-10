@@ -101,6 +101,26 @@ print info.execute()
 print info.get_raster_stats()
 ```
 
+## FAQ
+
+Nobody asked yet, but just in case.
+
+Q - Why don't you use the Python GDAL/OGR API?  
+A - The GDAL/OGR command line tools perform very specific, higher-level tasks, while
+the Python GDAL/OGR API offers a much lower level API. Therefore, in this library we
+try to offer this higher level functionality using a programmer-friendly interface.
+
+Q - But why do you internally call the command line tools, instead of implementing
+each command using the Python GDAL/OGR API?  
+A - We believe it would take us more time to write the library using the API instead of the CLI.
+It also has some advantages: 1) it can use different versions of GDAL/OGR in the same computer
+2) it does not require having Python GDAL bindings installed.
+In any case, we can try "the API way" if you are willing to fund it ;-)
+
+Q - Why don't you use the sample Python implementation of these commands that are
+ included in the GDAL Python bindings?  
+A - They can be used, the library allows specifying the path to the command to use.
+
 
 ## Authors
 
