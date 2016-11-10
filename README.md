@@ -53,8 +53,28 @@ Ogr2ogr. From postgis to shp:
 ```
 ogr = gdaltools.ogr2ogr()
 conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
-ogr.set_input(conn, srs="EPSG:4326")
+ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
 ogr.set_output("mylayer.shp")
+ogr.execute()
+```
+
+Ogr2ogr. From postgis to spatialite, specifying a different output table name:
+
+```
+ogr = gdaltools.ogr2ogr()
+conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
+ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
+ogr.set_output("mydb.sqlite", table_name="roads2010")
+ogr.execute()
+```
+
+Ogr2ogr. From postgis to spatialite, reprojecting to "EPSG:25830":
+
+```
+ogr = gdaltools.ogr2ogr()
+conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
+ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
+ogr.set_output("mydb.sqlite", srs="EPSG:25830")
 ogr.execute()
 ```
 

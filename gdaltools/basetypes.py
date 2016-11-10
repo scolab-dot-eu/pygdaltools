@@ -76,11 +76,11 @@ class Wrapper():
         pass
     
     def _do_execute(self, args):
-        p = subprocess.Popen(args, stdin=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
         output, err = p.communicate()
         rc = p.returncode
-        print "return code: " + str(rc)
+        logging.debug("return code: " + str(rc))
         if rc>0:
-            logging.error(msg)
+            logging.error(err)
             raise GdalToolsError(rc, err)
         return output

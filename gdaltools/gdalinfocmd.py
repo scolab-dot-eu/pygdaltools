@@ -24,11 +24,11 @@
 import logging
 import re
 import os
-from .basetypes import GdalToolsError
+from .basetypes import GdalToolsError, Wrapper, ConnectionString, FileConnectionString
 import StringIO as io
 
 
-def get_raster_stats(self):
+def get_raster_stats(raster_path):
     """
     Gets the statistics of the raster using gdalinfo command.
     Returns an array of tuples, containing the min, max, mean and stdev values
@@ -40,7 +40,9 @@ def get_raster_stats(self):
     (band0_ min, band0_max, band0_mean, band0_stdev) = stats[0]
     (band1_ min, band1_max, band1_mean, band1_stdev) = stats[1]
     """
-    gi = GdalInfo(raster_path)
+    gi = GdalInfo()
+    gi.set_input(raster_path)
+    gi.set_flags(stats=True)
     gi.execute()
     return gi.get_raster_stats()
     
@@ -52,7 +54,8 @@ def gdalinfo(raster_path, **flags):
     :param raster_path: The path to the raster file
     :param flags: flags for the gdalinfo command. See GdalInfo.set_flags for accepted parameters
     """
-    gi = GdalInfo(raster_path)
+    gi = GdalInfo()
+    gi.set_input(raster_path)
     if flags:
         gi.set_flags(**flags)
     return gi.execute()
@@ -61,7 +64,7 @@ class GdalInfo(Wrapper):
     """
     Wrapper for the gdalinfo command
     """
-    GDALINFO_PATH = '/usr/bin/ogr2ogr'
+    GDALINFO_PATH = '/usr/bin/gdalinfo'
     __BAND_PATTERN=re.compile("Band ([0-9]+).*")
     __BAND_STATS_PATTERN=re.compile("  Minimum=([-+]?\d*\.\d+|\d+), Maximum=([-+]?\d*\.\d+|\d+), Mean=([-+]?\d*\.\d+|\d+), StdDev=([-+]?\d*\.\d+|\d+).*")
     __BAND_NO_DATA_PATTERN=re.compile("  NoData Value=(.*)")
@@ -75,13 +78,14 @@ class GdalInfo(Wrapper):
         return self.GDALINFO_PATH
     
     def set_input(self, input_raster):
-        if isinstance(input_ds, ConnectionString):
+        if isinstance(input_raster, ConnectionString):
             self.in_ds = input_raster
         else:
             self.in_ds = FileConnectionString(input_raster)
         return self
 
     def set_flags(
+            self,
             stats=False, mm=False, approx_stats=False, hist=False, nogcp=False,
             nomd=False, nrat=False, noct=False, checksum=False, listmdd=False, mdd=None,
             nofl=False, sd=None, proj4=False):
@@ -105,7 +109,7 @@ class GdalInfo(Wrapper):
         self.proj4 = proj4
         return self
     
-    def _get_flag_array():
+    def _get_flag_array(self):
         result = []
         if self.stats:
             result.append("-stats")
@@ -144,9 +148,9 @@ class GdalInfo(Wrapper):
             result.append("-proj4")
         return result
     
-    def execute()
-        args = [GDALINFO_PATH, _get_flag_array(), self.in_ds.encode()]
-        safe_args = [GDALINFO_PATH, "-stats", unicode(self.in_ds)]
+    def execute(self):
+        args = [self.GDALINFO_PATH] + self._get_flag_array() + [self.in_ds.encode()]
+        safe_args = [self.GDALINFO_PATH] + self._get_flag_array() + [unicode(self.in_ds)]
         logging.debug(" ".join(safe_args))
         self.output = self._do_execute(args)
         return self.output
