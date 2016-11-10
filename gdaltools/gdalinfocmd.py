@@ -64,7 +64,8 @@ class GdalInfo(Wrapper):
     """
     Wrapper for the gdalinfo command
     """
-    GDALINFO_PATH = '/usr/bin/gdalinfo'
+    CMD = 'gdalinfo'
+    
     __BAND_PATTERN=re.compile("Band ([0-9]+).*")
     __BAND_STATS_PATTERN=re.compile("  Minimum=([-+]?\d*\.\d+|\d+), Maximum=([-+]?\d*\.\d+|\d+), Mean=([-+]?\d*\.\d+|\d+), StdDev=([-+]?\d*\.\d+|\d+).*")
     __BAND_NO_DATA_PATTERN=re.compile("  NoData Value=(.*)")
@@ -74,8 +75,10 @@ class GdalInfo(Wrapper):
         self.set_flags()
         self.output = None
 
+    """
     def _get_default_command(self):
         return self.GDALINFO_PATH
+    """
     
     def set_input(self, input_raster):
         if isinstance(input_raster, ConnectionString):
@@ -149,8 +152,9 @@ class GdalInfo(Wrapper):
         return result
     
     def execute(self):
-        args = [self.GDALINFO_PATH] + self._get_flag_array() + [self.in_ds.encode()]
-        safe_args = [self.GDALINFO_PATH] + self._get_flag_array() + [unicode(self.in_ds)]
+        cmd = self._get_command()
+        args = [cmd] + self._get_flag_array() + [self.in_ds.encode()]
+        safe_args = [cmd] + self._get_flag_array() + [unicode(self.in_ds)]
         logging.debug(" ".join(safe_args))
         self.output = self._do_execute(args)
         return self.output

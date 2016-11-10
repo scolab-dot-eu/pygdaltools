@@ -39,7 +39,7 @@ class Ogr2ogr(Wrapper):
     MODE_DS_UPDATE="UP"
     MODE_DS_CREATE_OR_UPDATE="CU"
     
-    OGR2OGR_PATH = '/usr/bin/ogr2ogr'
+    CMD = 'ogr2ogr'
     
     def __init__(self, version=1, command_path=None):
         Wrapper.__init__(self, version, command_path)
@@ -51,11 +51,9 @@ class Ogr2ogr(Wrapper):
         self._config_options = {}
         self._config_options_internal = {}
         self.geom_type = None
-        
-    def _get_default_command(self):
-        return self.OGR2OGR_PATH
+        self.encoding = None
     
-    def set_input(self, input_ds, table_name=None, srs=None, encoding=None):
+    def set_input(self, input_ds, table_name=None, srs=None):
         """
         Sets the input layer
         
@@ -67,11 +65,6 @@ class Ogr2ogr(Wrapper):
         (e.g. "EPSG:4326"). Ogr will try to autodetect the SRS if this parameter is omitted,
         but autodetection will fail in a number of situations, so it is always recommended
         to explicitly set the SRS parameter
-        :param encoding: Defines the character encoding of the input layer.
-        Ogr will try to autodetect the encoding if this parameter is omitted,
-        but autodetection will fail in a number of situations, so it is always recommended
-        to explicitly set the encoding.
-        Only supported for Shapefiles, it will be ignored for other data source types
         """
         if isinstance(input_ds, ConnectionString):
             self.in_ds = input_ds
@@ -79,9 +72,6 @@ class Ogr2ogr(Wrapper):
             self.in_ds = FileConnectionString(input_ds)
         self.in_table = table_name
         self.in_srs = srs
-        self.in_encoding = encoding
-        if encoding:
-            self._config_options_internal["SHAPE_ENCODING"]=encoding
         return self
     
     def set_output(self, output_ds, file_type=None, table_name=None, srs=None):
@@ -127,8 +117,11 @@ class Ogr2ogr(Wrapper):
             else:
                 self.out_file_type = "ESRI Shapefile"
 
-        if file_type=="SQLite":
+        if self.out_file_type=="SQLite":
             self._dataset_creation_options_internal["SPATIALITE"]="YES"
+            self._layer_creation_options_internal["LAUNDER"]="YES"
+        elif self.out_file_type=="PostgreSQL":
+            self._layer_creation_options_internal["LAUNDER"]="YES"
 
         self.out_table = table_name
         self.out_srs = srs
@@ -170,12 +163,34 @@ class Ogr2ogr(Wrapper):
         {"SPATIAL_INDEX": "YES", "RESIZE": "YES"}
         """
         result = self._layer_creation_options_internal.copy()
+        if self.encoding and self.out_file_type == "ESRI Shapefile":
+            result["ENCODING"] = self.encoding
         result.update(self._layer_creation_options)
         return result
 
     @layer_creation_options.setter 
     def layer_creation_options(self, layer_creation_options):
         self._layer_creation_options = layer_creation_options
+    
+    def set_encoding(self, encoding):
+        """
+        Sets the encoding used to read and write Shapefiles. You MUST ALWAYS
+        set the encoding when working with Shapefiles, unless you are only using ASCII
+        characters. Note that the encoding is ignored for the rest of data sources.
+        
+        Ogr2ogr does not properly handle charset recoding for Shapefiles,
+        so it is not possible to read from a Shapefile using enconding A and
+        to write to another Shapefile using encoding B.
+        
+        However, it IS possible to read from a Shapefile using encoding A,
+        write to a different format (such as Spatialite),
+        and then do the reverse operation reading from Spatialite and writing
+        to Shapefile using encoding B.
+        
+        :param encoding: A string defining the charset to use (e.g. "UTF-8" or
+        "ISO-8859-1").
+        """
+        self.encoding = encoding
 
     @property
     def config_options(self):
@@ -184,6 +199,8 @@ class Ogr2ogr(Wrapper):
         {"SHAPE_ENCODING": "latin1"}, {"OGR_ENABLE_PARTIAL_REPROJECTION": "YES"}
         """
         result = self._config_options_internal.copy()
+        if self.encoding:
+            result["SHAPE_ENCODING"] = self.encoding
         result.update(self._config_options)
         return result
 
@@ -192,14 +209,15 @@ class Ogr2ogr(Wrapper):
         self._config_options = options
 
     def execute(self):
-        args = [self.command]
+        args = [self._get_command()]
 
         if self.data_source_mode==self.MODE_DS_UPDATE:
             args.extend(["-update"])
         elif self.data_source_mode==self.MODE_DS_CREATE_OR_UPDATE:
-            if isinstance(self.out_ds, FileConnectionString) and os.path.exists(unicode(self.out_ds)):
-                # if it is a FileConnectionString, only use -update if the file exists
-                args.extend(["-update"])
+            if isinstance(self.out_ds, FileConnectionString):
+                if os.path.exists(unicode(self.out_ds)):
+                    # if it is a FileConnectionString, only use -update if the file exists
+                    args.extend(["-update"])
             else:
                 args.extend(["-update"])
 
@@ -229,7 +247,8 @@ class Ogr2ogr(Wrapper):
         elif self.in_table:
             args.extend(["-nln", self.in_table])
         elif isinstance(self.in_ds, FileConnectionString):
-            args.extend(["-nln", os.path.basename(self.in_ds.encode())])
+            tbl_name = os.path.splitext(os.path.basename(self.in_ds.encode()))[0]
+            args.extend(["-nln", tbl_name])
         
         if self.geom_type:
             args.extend(["-nlt", self.geom_type])

@@ -23,6 +23,7 @@
 
 import subprocess
 import logging
+import os, platform
 
 class GdalToolsError(Exception):
     def __init__(self, code=-1, message=None):
@@ -65,17 +66,23 @@ class FileConnectionString():
 
 
 class Wrapper():
+    BASEPATH = "/usr/bin"
+    CMD = None
     def __init__(self, version=1, command_path=None):
         self.version = version
-        if command_path:
-            self.command = command_path
-        else:
-            self.command = self._get_default_command()
+        self._command = command_path
     
-    def _get_default_command(self):
-        pass
+    def _get_command(self):
+        if self._command:
+            return self._command
+        if platform.system()=='Windows':
+            cmd = self.CMD + ".exe"
+        else:
+            cmd = self.CMD
+        return os.path.join(self.BASEPATH, cmd)
     
     def _do_execute(self, args):
+        print args
         p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
         output, err = p.communicate()
         rc = p.returncode

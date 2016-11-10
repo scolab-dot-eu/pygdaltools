@@ -35,7 +35,8 @@ Ogr2ogr. From shp to geojson:
 
 ```
 ogr = gdaltools.ogr2ogr()
-ogr.set_input("mylayer.shp", srs="EPSG:4326", encoding="UTF-8")
+ogr.set_encoding("UTF-8")
+ogr.set_input("mylayer.shp", srs="EPSG:4326")
 ogr.set_output("mylayer.geojson")
 ogr.execute()
 ```
@@ -43,8 +44,9 @@ ogr.execute()
 It can also be chained in a single line:
 
 ```
-ogr = gdaltools.ogr2ogr()\
-  .set_input("mylayer.shp", srs="EPSG:4326", encoding="UTF-8")\
+gdaltools.ogr2ogr()\
+  .set_encoding("UTF-8")\
+  .set_input("mylayer.shp", srs="EPSG:4326")\
   .set_output("mylayer.geojson").execute()
 ```
 
@@ -52,7 +54,7 @@ Ogr2ogr. From postgis to shp:
 
 ```
 ogr = gdaltools.ogr2ogr()
-conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
+conn = gdaltools.PgConnectionString(host="localhost", port=5432, dbname="scolab", schema="data", user="myuser", password="mypass")
 ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
 ogr.set_output("mylayer.shp")
 ogr.execute()
@@ -62,9 +64,10 @@ Ogr2ogr. From postgis to spatialite, specifying a different output table name:
 
 ```
 ogr = gdaltools.ogr2ogr()
-conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
+conn = gdaltools.PgConnectionString(host="localhost", port=5432, dbname="scolab", schema="data", user="myuser", password="mypass")
 ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
 ogr.set_output("mydb.sqlite", table_name="roads2010")
+ogr.set_output_mode(data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE)
 ogr.execute()
 ```
 
@@ -72,7 +75,7 @@ Ogr2ogr. From postgis to spatialite, reprojecting to "EPSG:25830":
 
 ```
 ogr = gdaltools.ogr2ogr()
-conn = gdaltools.PgConnectionString(host=localhost, port=5432, dbname=scolab, schema=data, user=myuser, password=mypass))
+conn = gdaltools.PgConnectionString(host="localhost", port=5432, dbname="scolab", schema="data", user="myuser", password="mypass")
 ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
 ogr.set_output("mydb.sqlite", srs="EPSG:25830")
 ogr.execute()
@@ -85,13 +88,18 @@ In order to configure specific paths (for instance for using the library in Wind
 
 ```
 import gdaltools
-gdaltools.Ogr2ogr.OGR2OGR_PATH = "C/Program Files/Gdal/bin/ogr2ogr.exe"
-gdaltools.GdalInfo.GDALINFO_PATH = "C/Program Files/Gdal/bin/gdalinfo.exe"
-
-print gdaltools.gdalinfo("myraster1.tif")
-print gdaltools.gdalinfo("myraster2.tif")
+gdaltools.Wrapper.BASEPATH = "C/Program Files/Gdal/bin"
+print gdaltools.gdalinfo("mywindowsraster.tif")
 ```
 
+You can also use lower level API for setting the full path for specific commands:
+
+```
+info = gdaltools.GdalInfo(command_path="C/Program Files/Gdal/bin/gdalinfo.exe")
+info.set_input('mywindowsraster.tif')
+print info.execute()
+print info.get_raster_stats()
+```
 
 
 ## Authors
