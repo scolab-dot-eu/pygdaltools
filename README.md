@@ -67,7 +67,7 @@ ogr = gdaltools.ogr2ogr()
 conn = gdaltools.PgConnectionString(host="localhost", port=5432, dbname="scolab", schema="data", user="myuser", password="mypass")
 ogr.set_input(conn, table_name="roads", srs="EPSG:4326")
 ogr.set_output("mydb.sqlite", table_name="roads2010")
-ogr.set_output_mode(data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE)
+ogr.set_output_mode(data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE) # required to add the layer to an existing DB
 ogr.execute()
 ```
 

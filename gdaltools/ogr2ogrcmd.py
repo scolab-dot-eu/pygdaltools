@@ -215,7 +215,7 @@ class Ogr2ogr(Wrapper):
             args.extend(["-update"])
         elif self.data_source_mode==self.MODE_DS_CREATE_OR_UPDATE:
             if isinstance(self.out_ds, FileConnectionString):
-                if os.path.exists(unicode(self.out_ds)):
+                if os.path.exists(self.out_ds.encode()):
                     # if it is a FileConnectionString, only use -update if the file exists
                     args.extend(["-update"])
             else:
@@ -230,7 +230,8 @@ class Ogr2ogr(Wrapper):
             args.extend(['-t_srs', self.out_srs])
 
         if self.in_srs:
-            args.extend(['-a_srs', self.in_srs])
+            if not self.out_srs:
+                args.extend(['-a_srs', self.in_srs])
             args.extend(['-s_srs', self.in_srs])
         
         args.extend(["-f", self.out_file_type])
