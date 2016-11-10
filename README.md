@@ -78,6 +78,21 @@ ogr.set_output("mydb.sqlite", srs="EPSG:25830")
 ogr.execute()
 ```
 
+## Configuration
+
+By default, gdaltools assumes that Gdal/Ogr commands are installes under /usr/bin/ (the standard Linux path).
+In order to configure specific paths (for instance for using the library in Windows), you can use:
+
+```
+import gdaltools
+gdaltools.Ogr2ogr.OGR2OGR_PATH = "C/Program Files/Gdal/bin/ogr2ogr.exe"
+gdaltools.GdalInfo.GDALINFO_PATH = "C/Program Files/Gdal/bin/gdalinfo.exe"
+
+print gdaltools.gdalinfo("myraster1.tif")
+print gdaltools.gdalinfo("myraster2.tif")
+```
+
+
 
 ## Authors
 
