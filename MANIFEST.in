@@ -1,0 +1,15 @@
+# Informational files
+include README.md
+include LICENSE
+
+graft tests
+
+# Exclude any compile Python files (most likely grafted by tests/ directory).
+global-exclude *.pyc
+
+# Setup-related things
+include pavement.py
+include requirements-dev.txt
+include requirements.txt
+include setup.py
+include tox.ini
