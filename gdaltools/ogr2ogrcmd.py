@@ -171,22 +171,22 @@ class Ogr2ogr(Wrapper):
     @layer_creation_options.setter 
     def layer_creation_options(self, layer_creation_options):
         self._layer_creation_options = layer_creation_options
-    
+
     def set_encoding(self, encoding):
         """
         Sets the encoding used to read and write Shapefiles. You MUST ALWAYS
         set the encoding when working with Shapefiles, unless you are only using ASCII
         characters. Note that the encoding is ignored for the rest of data sources.
-        
+
         Ogr2ogr does not properly handle charset recoding for Shapefiles,
         so it is not possible to read from a Shapefile using enconding A and
         to write to another Shapefile using encoding B.
-        
+
         However, it IS possible to read from a Shapefile using encoding A,
         write to a different format (such as Spatialite),
         and then do the reverse operation reading from Spatialite and writing
         to Shapefile using encoding B.
-        
+
         :param encoding: A string defining the charset to use (e.g. "UTF-8" or
         "ISO-8859-1").
         """
@@ -211,9 +211,9 @@ class Ogr2ogr(Wrapper):
     def execute(self):
         args = [self._get_command()]
 
-        if self.data_source_mode==self.MODE_DS_UPDATE:
+        if self.data_source_mode == self.MODE_DS_UPDATE:
             args.extend(["-update"])
-        elif self.data_source_mode==self.MODE_DS_CREATE_OR_UPDATE:
+        elif self.data_source_mode == self.MODE_DS_CREATE_OR_UPDATE:
             if isinstance(self.out_ds, FileConnectionString):
                 if os.path.exists(self.out_ds.encode()):
                     # if it is a FileConnectionString, only use -update if the file exists
@@ -221,11 +221,11 @@ class Ogr2ogr(Wrapper):
             else:
                 args.extend(["-update"])
 
-        if self.layer_mode==self.MODE_LAYER_APPEND:
+        if self.layer_mode == self.MODE_LAYER_APPEND:
             args.extend(["-append"])
-        elif self.layer_mode==self.MODE_LAYER_OVERWRITE:
+        elif self.layer_mode == self.MODE_LAYER_OVERWRITE:
             args.extend(['-overwrite'])
-        
+
         if self.out_srs:
             args.extend(['-t_srs', self.out_srs])
 
@@ -233,14 +233,14 @@ class Ogr2ogr(Wrapper):
             if not self.out_srs:
                 args.extend(['-a_srs', self.in_srs])
             args.extend(['-s_srs', self.in_srs])
-        
+
         args.extend(["-f", self.out_file_type])
-        
+
         for key, value in self.dataset_creation_options.iteritems():
             args.extend(["-dsco", key+"="+value])
-        for key,value in self.layer_creation_options.iteritems():
+        for key, value in self.layer_creation_options.iteritems():
             args.extend(["-lco", key+"="+value])
-        for key,value in self.config_options.iteritems():
+        for key, value in self.config_options.iteritems():
             args.extend(["--config", key, value])
 
         if self.out_table:
@@ -250,7 +250,7 @@ class Ogr2ogr(Wrapper):
         elif isinstance(self.in_ds, FileConnectionString):
             tbl_name = os.path.splitext(os.path.basename(self.in_ds.encode()))[0]
             args.extend(["-nln", tbl_name])
-        
+
         if self.geom_type:
             args.extend(["-nlt", self.geom_type])
 
@@ -262,5 +262,5 @@ class Ogr2ogr(Wrapper):
             args.extend([self.out_ds.encode(), self.in_ds.encode()])
             safe_args.extend([unicode(self.out_ds), unicode(self.in_ds)])
         logging.debug(" ".join(safe_args))
-        
+
         return self._do_execute(args)
