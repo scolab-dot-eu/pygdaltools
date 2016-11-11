@@ -1,8 +1,13 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*$py.class
 
 # Distribution / packaging
 *.egg-info/
 build/
 dist/
 .tox/
+
+# testing
+.cache/
