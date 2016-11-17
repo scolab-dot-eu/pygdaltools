@@ -14,3 +14,4 @@ from .basetypes import ConnectionString, PgConnectionString, FileConnectionStrin
 from .gdalinfocmd import get_raster_stats, gdalinfo
 from .gdalinfocmd import GdalInfo
 from .ogr2ogrcmd import Ogr2ogr
+from .ogrinfocmd import ogrinfo, OgrInfo
