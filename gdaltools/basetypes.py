@@ -30,9 +30,11 @@ class GdalToolsError(Exception):
         self.code = code
         self.message=message
 
+
 class ConnectionString():
     def encode(self):
         pass
+
 
 class PgConnectionString(ConnectionString):
     conn_string_tpl = u"PG:host='{host}' port='{port}' user='{user}' dbname='{dbname}' password='{password}'"
@@ -52,6 +54,7 @@ class PgConnectionString(ConnectionString):
 
     def __str__(self):
         return self.__unicode__().encode('utf-8') 
+
 
 class FileConnectionString():
     
