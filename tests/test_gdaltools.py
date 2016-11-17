@@ -20,9 +20,13 @@ def tmpdir():
 """
 
 
-@pytest.fixture
+@pytest.yield_fixture
 def tmp_sqlite(tmpdir):
-    return unicode(tmpdir.join("db.sqlite"))
+    f = unicode(tmpdir.join("db.sqlite"))
+    yield f
+    import os
+    if os.path.exists(f):
+        os.remove(f)
 
 
 def test_spatialite_output(ogr, tmp_sqlite):
@@ -36,9 +40,6 @@ def test_spatialite_output(ogr, tmp_sqlite):
 
 
 def test_creation_mode(ogr, tmp_sqlite):
-    import os
-    print os.getcwd()
-
     ogr.set_input("tests/data/areas.shp", srs="EPSG:4258")
     ogr.set_encoding("UTF-8")
     ogr.set_output(tmp_sqlite)
@@ -50,7 +51,7 @@ def test_creation_mode(ogr, tmp_sqlite):
     from gdaltools import GdalToolsError
     with pytest.raises(GdalToolsError):
         ogr.execute()
-    assert ogr.returncode <> 0
+    assert ogr.returncode != 0
 
     # should also fail if explicitly using MODE_LAYER_CREATE and MODE_DS_CREATE_OR_UPDATE
     ogr.set_output_mode(
@@ -58,7 +59,7 @@ def test_creation_mode(ogr, tmp_sqlite):
             data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE)
     with pytest.raises(GdalToolsError):
         ogr.execute()
-    assert ogr.returncode <> 0
+    assert ogr.returncode != 0
 
     # should work with MODE_LAYER_OVERWRITE
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_OVERWRITE, data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE)
@@ -69,7 +70,7 @@ def test_creation_mode(ogr, tmp_sqlite):
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_CREATE, data_source_mode=ogr.MODE_DS_UPDATE)
     with pytest.raises(GdalToolsError):
         ogr.execute()
-    assert ogr.returncode <> 0
+    assert ogr.returncode != 0
 
     # should work
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_OVERWRITE, data_source_mode=ogr.MODE_DS_UPDATE)
@@ -84,14 +85,14 @@ def test_creation_mode(ogr, tmp_sqlite):
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_CREATE, data_source_mode=ogr.MODE_DS_CREATE)
     with pytest.raises(GdalToolsError):
         ogr.execute()
-    assert ogr.returncode <> 0
+    assert ogr.returncode != 0
 
     # should fail because the db exist and using MODE_DS_CREATE
     ogr.set_output(tmp_sqlite, table_name="areas01")
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_CREATE, data_source_mode=ogr.MODE_DS_CREATE)
     with pytest.raises(GdalToolsError):
         ogr.execute()
-    assert ogr.returncode <> 0
+    assert ogr.returncode != 0
 
     # should work
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_CREATE, data_source_mode=ogr.MODE_DS_CREATE_OR_UPDATE)
