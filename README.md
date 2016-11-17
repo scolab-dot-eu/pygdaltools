@@ -23,7 +23,7 @@ yum -y install gdal
 ```
 
 For Windows, you can install GDAL/OGR by using [OSGeo4W](https://trac.osgeo.org/osgeo4w/).
-You will also need to see the [Configuration section](#markdown-header-configuration).
+You will also need to see the [Configuration section](#configuration).
 
 ## Usage
 
