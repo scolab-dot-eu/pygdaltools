@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 '''
     gvSIG Online.
     Copyright (C) 2007-2015 gvSIG Association.
@@ -20,12 +19,11 @@
 '''
 @author: Cesar Martinez Izquierdo - Scolab <http://scolab.es>
 '''
-
 import logging
 import re
 import os
 from .basetypes import GdalToolsError, Wrapper, ConnectionString, FileConnectionString
-import StringIO as io
+import io
 
 
 def get_raster_stats(raster_path):
