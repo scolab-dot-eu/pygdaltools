@@ -39,6 +39,12 @@ python setup.py sdist
 python setup.py bdist_wheel --universal
 ```
 
+## Creating both soure & binary distributions (Wheels)a
+
+```
+python setup.py sdist bdist_wheel --universal
+```
+
 ## Uploading the distribution to PyPi
 
 ```
