@@ -8,6 +8,7 @@ mock==2.0.0
 
 # Linting
 flake8==3.0.4
+#flake8==3.2.1
 mccabe==0.5.2
 pycodestyle==2.1.0
 pyflakes==1.2.3
