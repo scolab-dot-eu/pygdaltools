@@ -112,7 +112,7 @@ ogr.execute()
 
 ## Configuration
 
-By default, gdaltools assumes that Gdal/Ogr commands are installes under /usr/bin/ (the standard Linux path).
+By default, gdaltools assumes that Gdal/Ogr commands are installed under /usr/bin/ (the standard Linux path).
 In order to configure specific paths (for instance for using the library in Windows), you can use:
 
 ```
