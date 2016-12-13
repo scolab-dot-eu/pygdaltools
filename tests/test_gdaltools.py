@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import pytest
 
 
@@ -22,7 +23,7 @@ def tmpdir():
 
 @pytest.yield_fixture
 def tmp_sqlite(tmpdir):
-    f = unicode(tmpdir.join("db.sqlite"))
+    f = str(tmpdir.join("db.sqlite"))
     yield f
     import os
     if os.path.exists(f):
@@ -78,8 +79,8 @@ def test_creation_mode(ogr, tmp_sqlite):
     assert ogr.returncode == 0
 
     # I think it should fail according ogr2ogr docs, but works at least in ogr 1.11 so excluding from testing
-    #ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_OVERWRITE, data_source_mode=ogr.MODE_DS_CREATE)
-    #ogr.execute()
+    # ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_OVERWRITE, data_source_mode=ogr.MODE_DS_CREATE)
+    # ogr.execute()
 
     # should fail
     ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_CREATE, data_source_mode=ogr.MODE_DS_CREATE)
@@ -116,8 +117,8 @@ def test_creation_mode(ogr, tmp_sqlite):
     assert ogr.returncode == 0
 
     # I think it should fail according ogr2ogr docs, but works at least in ogr 1.11 so excluding from testing
-    #ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_APPEND, data_source_mode=ogr.MODE_DS_CREATE)
-    #with pytest.raises(GdalToolsError):
+    # ogr.set_output_mode(layer_mode=ogr.MODE_LAYER_APPEND, data_source_mode=ogr.MODE_DS_CREATE)
+    # with pytest.raises(GdalToolsError):
     #    ogr.execute()
 
 
@@ -138,7 +139,7 @@ def test_shape_encoding(ogr, tmpdir, tmp_sqlite):
     # export as utf8 a layer having utf8 chars
     ogr.set_input(tmp_sqlite, table_name="pointsutf8", srs="EPSG:4258")
     out_shp = tmpdir.join("pointsutf8_01.shp")
-    ogr.set_output(unicode(out_shp))
+    ogr.set_output(str(out_shp))
     ogr.set_encoding("UTF-8")
     ogr.execute()
     assert ogr.returncode == 0
@@ -149,7 +150,7 @@ def test_shape_encoding(ogr, tmpdir, tmp_sqlite):
 
     # export as latin1 a layer having utf8 chars
     out_shp = tmpdir.join("pointsutf8_02.shp")
-    ogr.set_output(unicode(out_shp))
+    ogr.set_output(str(out_shp))
     ogr.set_encoding("ISO-8859-1")
     output = ogr.execute()
     assert ogr.returncode == 0

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 '''
     gvSIG Online.
     Copyright (C) 2007-2015 gvSIG Association.

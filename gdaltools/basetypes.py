@@ -24,6 +24,8 @@
 import subprocess
 import logging
 import os, platform
+import sys
+sys_encoding = sys.stdout.encoding
 
 class GdalToolsError(Exception):
     def __init__(self, code=-1, message=None):
@@ -88,9 +90,13 @@ class Wrapper():
         p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
         output, err = p.communicate()
         rc = p.returncode
-        self.stdout = output
-        self.stderr = err
         self.returncode = rc
+        try:
+            self.stdout = output.decode(sys_encoding)
+            self.stderr = err.decode(sys_encoding)
+        except:
+            self.stdout = "Error decoding stdout"
+            self.stderr = "Error decoding stderr"
         logging.debug("return code: " + str(rc))
         if rc>0:
             logging.error(err)

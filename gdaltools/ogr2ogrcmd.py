@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from __future__ import unicode_literals
 '''
     gvSIG Online.
     Copyright (C) 2015-2016 gvSIG Association.
@@ -253,11 +253,11 @@ class Ogr2ogr(Wrapper):
 
         args.extend(["-f", self.out_file_type])
 
-        for key, value in self.dataset_creation_options.iteritems():
+        for key, value in self.dataset_creation_options.items():
             args.extend(["-dsco", key+"="+value])
-        for key, value in self.layer_creation_options.iteritems():
+        for key, value in self.layer_creation_options.items():
             args.extend(["-lco", key+"="+value])
-        for key, value in self.config_options.iteritems():
+        for key, value in self.config_options.items():
             args.extend(["--config", key, value])
 
         if self.out_table:
@@ -274,10 +274,10 @@ class Ogr2ogr(Wrapper):
         safe_args = list(args)
         if self.in_table:
             args.extend([self.out_ds.encode(), self.in_ds.encode(), self.in_table])
-            safe_args.extend([unicode(self.out_ds), unicode(self.in_ds), self.in_table])
+            safe_args.extend([str(self.out_ds), str(self.in_ds), self.in_table])
         else:
             args.extend([self.out_ds.encode(), self.in_ds.encode()])
-            safe_args.extend([unicode(self.out_ds), unicode(self.in_ds)])
+            safe_args.extend([str(self.out_ds), str(self.in_ds)])
         logging.debug(" ".join(safe_args))
 
         return self._do_execute(args)
