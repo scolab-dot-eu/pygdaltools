@@ -33,13 +33,13 @@ pip install -e .
 python setup.py sdist
 ```
 
-## Creating binary distributions (Wheels)a
+## Creating binary distributions (Wheels)
 
 ```
 python setup.py bdist_wheel --universal
 ```
 
-## Creating both soure & binary distributions (Wheels)a
+## Creating both soure & binary distributions (Wheels)
 
 ```
 python setup.py sdist bdist_wheel --universal
