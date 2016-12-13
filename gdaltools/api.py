@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 '''
     gvSIG Online.
     Copyright (C) 2015-2016 gvSIG Association.
