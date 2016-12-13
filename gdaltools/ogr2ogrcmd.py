@@ -52,6 +52,7 @@ class Ogr2ogr(Wrapper):
         self._config_options_internal = {}
         self.geom_type = None
         self.encoding = None
+        self.preserve_fid = None
     
     def set_input(self, input_ds, table_name=None, srs=None):
         """
@@ -191,6 +192,15 @@ class Ogr2ogr(Wrapper):
         "ISO-8859-1").
         """
         self.encoding = encoding
+    
+    def set_preserve_fid(self, preserve_fid):
+        """
+        Use the FID of the source features instead of letting the output driver to
+        automatically assign a new one. It is True by default when output mode is
+        not append.
+        :param preserve_fid: True or False
+        """
+        self.preserve_fid = preserve_fid
 
     @property
     def config_options(self):
@@ -228,6 +238,13 @@ class Ogr2ogr(Wrapper):
 
         if self.out_srs:
             args.extend(['-t_srs', self.out_srs])
+        
+        if self.preserve_fid is None:  # it may also be False
+            if self.layer_mode != self.MODE_LAYER_APPEND:
+                # automatically set preserve_fid when we are not in APPEND mode
+                args.extend(['-preserve_fid'])
+        elif self.preserve_fid:
+            args.extend(['-preserve_fid'])
 
         if self.in_srs:
             if not self.out_srs:
