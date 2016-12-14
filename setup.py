@@ -220,7 +220,7 @@ try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
 except (IOError, ImportError):
-    description = ''
+    long_description = ''
 
 # See here for more options:
 # <http://pythonhosted.org/setuptools/setuptools.html>
