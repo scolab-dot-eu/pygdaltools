@@ -118,11 +118,11 @@ class Ogr2ogr(Wrapper):
             else:
                 self.out_file_type = "ESRI Shapefile"
 
-        if self.out_file_type=="SQLite":
-            self._dataset_creation_options_internal["SPATIALITE"]="YES"
-            self._layer_creation_options_internal["LAUNDER"]="YES"
-        elif self.out_file_type=="PostgreSQL":
-            self._layer_creation_options_internal["LAUNDER"]="YES"
+        if self.out_file_type == "SQLite":
+            self._dataset_creation_options_internal["SPATIALITE"] = "YES"
+            self._layer_creation_options_internal["LAUNDER"] = "YES"
+        elif self.out_file_type == "PostgreSQL":
+            self._layer_creation_options_internal["LAUNDER"] = "YES"
 
         self.out_table = table_name
         self.out_srs = srs
@@ -220,7 +220,8 @@ class Ogr2ogr(Wrapper):
 
     def execute(self):
         args = [self._get_command()]
-
+        config_options = self.config_options
+        
         if self.data_source_mode == self.MODE_DS_UPDATE:
             args.extend(["-update"])
         elif self.data_source_mode == self.MODE_DS_CREATE_OR_UPDATE:
@@ -234,7 +235,12 @@ class Ogr2ogr(Wrapper):
         if self.layer_mode == self.MODE_LAYER_APPEND:
             args.extend(["-append"])
         elif self.layer_mode == self.MODE_LAYER_OVERWRITE:
-            args.extend(['-overwrite'])
+            if self.out_file_type ==  "PostgreSQL" and config_options.get("OGR_TRUNCATE") != "NO":
+                # prefer truncate for PostgresSQL driver
+                args.extend(['-append'])
+                config_options["OGR_TRUNCATE"] = "YES"
+            else:
+                args.extend(['-overwrite'])
 
         if self.out_srs:
             args.extend(['-t_srs', self.out_srs])
@@ -257,7 +263,7 @@ class Ogr2ogr(Wrapper):
             args.extend(["-dsco", key+"="+value])
         for key, value in self.layer_creation_options.items():
             args.extend(["-lco", key+"="+value])
-        for key, value in self.config_options.items():
+        for key, value in config_options.items():
             args.extend(["--config", key, value])
 
         if self.out_table:
