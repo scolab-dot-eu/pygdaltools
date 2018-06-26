@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 
 import logging
 import os
-from .basetypes import Wrapper, ConnectionString, FileConnectionString
+from .basetypes import Wrapper, ConnectionString, FileConnectionString, PgConnectionString
 
 
 class Ogr2ogr(Wrapper):
@@ -267,23 +267,39 @@ class Ogr2ogr(Wrapper):
             args.extend(["--config", key, value])
 
         if self.out_table:
-            args.extend(["-nln", self.out_table])
+            out_table = self.out_table
         elif self.in_table:
-            args.extend(["-nln", self.in_table])
+            out_table = self.in_table
         elif isinstance(self.in_ds, FileConnectionString):
-            tbl_name = os.path.splitext(os.path.basename(self.in_ds.encode()))[0]
-            args.extend(["-nln", tbl_name])
+            out_table = os.path.splitext(os.path.basename(self.in_ds.encode()))[0]
+        else:
+            out_table = None
+        
+        if out_table:
+            if (isinstance(self.out_ds, PgConnectionString) and
+                  self.out_ds.schema and
+                  not out_table.startswith(self.out_ds.schema + ".")):
+                schema = self.out_ds.schema + "."
+            else:
+                schema = ""
+            args.extend(["-nln", schema + out_table])
 
         if self.geom_type:
             args.extend(["-nlt", self.geom_type])
 
         safe_args = list(args)
         if self.in_table:
-            args.extend([self.out_ds.encode(), self.in_ds.encode(), self.in_table])
-            safe_args.extend([str(self.out_ds), str(self.in_ds), self.in_table])
+            if (isinstance(self.in_ds, PgConnectionString) and
+                  self.in_ds.schema and
+                  not self.in_table.startswith(self.in_ds.schema + ".")):
+                schema = self.in_ds.schema + "."
+            else:
+                schema = ""            
+            args.extend([self.out_ds.encode(), self.in_ds.encode(), schema + self.in_table])
+            safe_args.extend([str(self.out_ds), str(self.in_ds), schema + self.in_table])
         else:
             args.extend([self.out_ds.encode(), self.in_ds.encode()])
-            safe_args.extend([str(self.out_ds), str(self.in_ds)])
+            safe_args.extend([str(self.out_ds), str(self.in_ds)])        
         logging.debug(" ".join(safe_args))
 
         return self._do_execute(args)
