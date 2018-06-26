@@ -83,6 +83,7 @@ class Wrapper():
         return os.path.join(self.BASEPATH, cmd)
     
     def _do_execute(self, args):
+        self.args = args
         p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=-1)
         output, err = p.communicate()
         rc = p.returncode

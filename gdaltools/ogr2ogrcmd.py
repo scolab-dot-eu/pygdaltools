@@ -299,7 +299,8 @@ class Ogr2ogr(Wrapper):
             safe_args.extend([str(self.out_ds), str(self.in_ds), schema + self.in_table])
         else:
             args.extend([self.out_ds.encode(), self.in_ds.encode()])
-            safe_args.extend([str(self.out_ds), str(self.in_ds)])        
+            safe_args.extend([str(self.out_ds), str(self.in_ds)])
+        
         logging.debug(" ".join(safe_args))
-
+        self.safe_args = safe_args
         return self._do_execute(args)

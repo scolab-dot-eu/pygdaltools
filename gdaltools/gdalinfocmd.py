@@ -155,6 +155,7 @@ class GdalInfo(Wrapper):
         args = [cmd] + self._get_flag_array() + [self.in_ds.encode()]
         safe_args = [cmd] + self._get_flag_array() + [unicode(self.in_ds)]
         logging.debug(" ".join(safe_args))
+        self.safe_args = safe_args
         self.output = self._do_execute(args)
         return self.output
 

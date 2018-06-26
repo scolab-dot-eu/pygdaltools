@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 '''
@@ -142,4 +143,5 @@ class OgrInfo(Wrapper):
         
         args.append(self.in_ds.encode())
         args.extend(self.in_tables)
+        self.safe_args = safe_args
         return self._do_execute(args)
