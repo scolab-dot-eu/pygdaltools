@@ -13,7 +13,7 @@ This command does not automatically install GDAL/OGR tools in your system.
 In Debian or Ubuntu you can install them by using:
 
 ```
-apt-get install gdalbin
+apt-get install gdal-bin
 ```
 
 In CentOS:
