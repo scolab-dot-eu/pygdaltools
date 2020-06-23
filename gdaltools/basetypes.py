@@ -25,7 +25,10 @@ import subprocess
 import logging
 import os, platform
 import sys
-sys_encoding = sys.stdout.encoding
+try:
+	sys_encoding = sys.stdout.encoding or 'utf-8'
+except:
+	sys_encoding = 'utf-8'
 
 class GdalToolsError(Exception):
     def __init__(self, code=-1, message=None):
