@@ -23,3 +23,7 @@ pypandoc
 # Miscellaneous
 Paver==1.2.4
 colorama==0.3.7
+
+# from who?
+requests_toolbelt
+pkginfo

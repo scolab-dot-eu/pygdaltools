@@ -8,6 +8,7 @@ from .basetypes import ConnectionString, PgConnectionString, \
         FileConnectionString, GdalToolsError, Wrapper
 from .gdalinfocmd import get_raster_stats, gdalinfo
 from .gdalinfocmd import GdalInfo
+from .gdalsrsinfo import gdalsrsinfo, GdalSrsInfo
 from .ogr2ogrcmd import Ogr2ogr
 from .ogrinfocmd import ogrinfo, OgrInfo
 

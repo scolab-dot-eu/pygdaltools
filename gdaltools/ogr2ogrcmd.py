@@ -53,6 +53,8 @@ class Ogr2ogr(Wrapper):
         self.geom_type = None
         self.encoding = None
         self.preserve_fid = None
+        self.sql = None
+        self.dim = None
     
     def set_input(self, input_ds, table_name=None, srs=None):
         """
@@ -202,6 +204,28 @@ class Ogr2ogr(Wrapper):
         """
         self.preserve_fid = preserve_fid
 
+    def set_sql(self, sql):
+        """
+        Use the FID of the source features instead of letting the output driver to
+        automatically assign a new one. It is True by default when output mode is
+        not append.
+        :param sql: A string defining the sql query
+        """
+        self.sql = sql
+
+
+    def set_dim(self, dim):
+        """
+        Force the coordinate dimension to val (valid values are XY, XYZ, XYM, and XYZM
+        - for backwards compatibility 2 is an alias for XY and 3 is an alias for XYZ).
+        This affects both the layer geometry type, and feature geometries. The value
+        can be set to layer_dim to instruct feature geometries to be promoted to the
+        coordinate dimension declared by the layer. Support for M was added in GDAL
+        2.1.
+        :param dim: A string defining the dimension
+        """
+        self.dim = dim
+
     @property
     def config_options(self):
         """
@@ -261,8 +285,9 @@ class Ogr2ogr(Wrapper):
 
         for key, value in self.dataset_creation_options.items():
             args.extend(["-dsco", key+"="+value])
-        for key, value in self.layer_creation_options.items():
-            args.extend(["-lco", key+"="+value])
+        if not '-append' in args:
+            for key, value in self.layer_creation_options.items():
+                args.extend(["-lco", key+"="+value])
         for key, value in config_options.items():
             args.extend(["--config", key, value])
 
@@ -286,7 +311,10 @@ class Ogr2ogr(Wrapper):
 
         if self.geom_type:
             args.extend(["-nlt", self.geom_type])
-
+        if self.sql:
+            args.extend(["-sql", self.sql])
+        if self.dim:
+            args.extend(["-dim", self.dim])
         safe_args = list(args)
         if self.in_table:
             if (isinstance(self.in_ds, PgConnectionString) and

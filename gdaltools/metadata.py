@@ -8,7 +8,7 @@ Information describing the project.
 package = 'pygdaltools'
 project = 'pygdaltools'
 project_no_spaces = project.replace(' ', '')
-version = '1.2.1'
+version = '1.3.0'
 description = """Python wrapper for Gdal/OGR command line tools"""
 authors = ['Cesar Martinez Izquierdo - SCOLAB']
 authors_string = ', '.join(authors)

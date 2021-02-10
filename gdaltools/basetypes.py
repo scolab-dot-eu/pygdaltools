@@ -56,6 +56,9 @@ class PgConnectionString(ConnectionString):
 
     def __unicode__(self):
         return '"' + self.conn_string_tpl.format(host=self.host, port=self.port, user=self.user, dbname=self.dbname, password='xxxxxx', schema=self.schema) + '"'
+    
+    def __str__(self):
+        return self.__unicode__()
 
 class FileConnectionString():
     
@@ -68,6 +71,8 @@ class FileConnectionString():
     def __unicode__(self):
         return '"' + self.file_path + '"'
 
+    def __str__(self):
+        return self.__unicode__()
 
 class Wrapper():
     BASEPATH = "/usr/bin"
