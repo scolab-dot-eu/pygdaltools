@@ -21,6 +21,5 @@ configparser; python_version<"3.2"
 Paver==1.2.4
 colorama==0.3.7
 
-# from who?
-requests_toolbelt
-pkginfo
+# Pypi upload
+twine
