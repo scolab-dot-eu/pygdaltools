@@ -45,6 +45,12 @@ python setup.py bdist_wheel --universal
 python setup.py sdist bdist_wheel --universal
 ```
 
+## Check distribution before uploading to Pypi
+
+```
+twine check dist/*1.3*
+```
+
 ## Uploading the distribution to PyPi
 
 ```
