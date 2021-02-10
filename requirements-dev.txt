@@ -17,9 +17,6 @@ pyflakes==1.2.3
 enum34; python_version<"3.4"
 configparser; python_version<"3.2" 
 
-# Pypi publishing
-pypandoc
-
 # Miscellaneous
 Paver==1.2.4
 colorama==0.3.7

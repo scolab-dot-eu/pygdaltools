@@ -216,11 +216,11 @@ class TestAllCommand(TestCommand):
 # define install_requires for specific Python versions
 python_version_specific_requires = []
 
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-    long_description = ''
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+#with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+with open(path.join(this_directory, 'README.md')) as f:
+    long_description = f.read()
 
 # See here for more options:
 # <http://pythonhosted.org/setuptools/setuptools.html>
@@ -234,6 +234,7 @@ setup_dict = dict(
     url=metadata.url,
     description=metadata.description,
     long_description=long_description,
+    long_description_content_type='text/markdown',
     # Find a list of classifiers here:
     # <http://pypi.python.org/pypi?%3Aaction=list_classifiers>
     classifiers=[
