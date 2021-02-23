@@ -123,7 +123,7 @@ class OgrInfo(Wrapper):
                 args.extend(["-dialect", self.dialect])
             if self.spat and len(self.spat)==4:
                 args.append("-spat")
-                args.extend(spat)
+                args.extend(self.spat)
             if self.geomfield:
                 args.extend(["-geomfield", self.geomfield])
             if self.fid:
@@ -137,7 +137,7 @@ class OgrInfo(Wrapper):
 
         # log the command, excluding password for db connection strings
         safe_args = list(args)
-        safe_args.append(unicode(self.in_ds))
+        safe_args.append(str(self.in_ds))
         safe_args.extend(self.in_tables)
         logging.debug(" ".join(safe_args))
         

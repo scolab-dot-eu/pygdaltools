@@ -134,11 +134,11 @@ class GdalInfo(Wrapper):
         if self.listmdd:
             result.append("-listmdd")
         if self.mdd:
-            if mdd=="all":
+            if self.mdd=="all":
                result.extend(["-mdd", "all"])
             else:
                 try:
-                    for domain in mdd:
+                    for domain in self.mdd:
                         result.extend(["-mdd", domain])
                 except:
                     raise GdalToolsError(-1, "mdd flag only accepts 'all' or a list of metadata domains to report about")
@@ -153,7 +153,7 @@ class GdalInfo(Wrapper):
     def execute(self):
         cmd = self._get_command()
         args = [cmd] + self._get_flag_array() + [self.in_ds.encode()]
-        safe_args = [cmd] + self._get_flag_array() + [unicode(self.in_ds)]
+        safe_args = [cmd] + self._get_flag_array() + [str(self.in_ds)]
         logging.debug(" ".join(safe_args))
         self.safe_args = safe_args
         self.output = self._do_execute(args)

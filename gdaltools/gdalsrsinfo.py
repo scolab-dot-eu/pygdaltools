@@ -67,6 +67,7 @@ class GdalSrsInfo(Wrapper):
         self.single_line = single_line
         self.validate = validate
         self.output_type = output_type
+        self.search_epsg = search_epsg
         return self
     
     def _get_flag_array(self):
@@ -84,7 +85,7 @@ class GdalSrsInfo(Wrapper):
     def execute(self):
         cmd = self._get_command()
         args = [cmd] + self._get_flag_array() + [self.in_ds.encode()]
-        safe_args = [cmd] + self._get_flag_array() + [unicode(self.in_ds)]
+        safe_args = [cmd] + self._get_flag_array() + [str(self.in_ds)]
         logging.debug(" ".join(safe_args))
         self.safe_args = safe_args
         self.output = self._do_execute(args)

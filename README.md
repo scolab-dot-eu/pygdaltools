@@ -1,6 +1,6 @@
 # pygdaltools
 
-Python library providing wrappers for the most common Gdal/OGR command line tools. Currently, ogr2ogr, ogrinfo and gdalinfo are supported.
+Python library providing wrappers for the most common Gdal/OGR command line tools. Currently, ogr2ogr, ogrinfo, gdalinfo and gdalsrsinfo are supported.
 Note that this library requires GDAL/OGR tools to be installed in the system.
 
 ## Installation
