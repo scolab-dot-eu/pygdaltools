@@ -269,11 +269,7 @@ class Ogr2ogr(Wrapper):
         if self.out_srs:
             args.extend(['-t_srs', self.out_srs])
         
-        if self.preserve_fid is None:  # it may also be False
-            if self.layer_mode != self.MODE_LAYER_APPEND:
-                # automatically set preserve_fid when we are not in APPEND mode
-                args.extend(['-preserve_fid'])
-        elif self.preserve_fid:
+        if self.preserve_fid:
             args.extend(['-preserve_fid'])
 
         if self.in_srs:
