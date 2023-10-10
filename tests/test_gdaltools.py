@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import pytest
 from gdaltools.basetypes import GdalToolsError
 
-@pytest.yield_fixture
+@pytest.fixture
 def ogr():
     import gdaltools
     ogr = gdaltools.ogr2ogr()
@@ -11,7 +11,7 @@ def ogr():
 
 
 """
-@pytest.yield_fixture
+@pytest.fixture
 def tmpdir():
     import tempfile
     tmp_path = tempfile.mkdtemp()
@@ -21,7 +21,7 @@ def tmpdir():
 """
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def tmp_sqlite(tmpdir):
     f = str(tmpdir.join("db.sqlite"))
     yield f
