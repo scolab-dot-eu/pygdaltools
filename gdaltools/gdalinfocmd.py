@@ -171,7 +171,7 @@ class GdalInfo(Wrapper):
         (band0_ min, band0_max, band0_mean, band0_stdev) = stats[0]
         (band1_ min, band1_max, band1_mean, band1_stdev) = stats[1]
         """
-        stats_str = self.output
+        stats_str = self.stdout
         buf = io.StringIO(stats_str)
         result = []
         band_results = self.__process_band(buf)
