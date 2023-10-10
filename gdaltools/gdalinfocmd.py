@@ -66,7 +66,7 @@ class GdalInfo(Wrapper):
     CMD = 'gdalinfo'
     
     __BAND_PATTERN=re.compile("Band ([0-9]+).*")
-    __BAND_STATS_PATTERN=re.compile("  Minimum=([-+]?\d*\.\d+|\d+), Maximum=([-+]?\d*\.\d+|\d+), Mean=([-+]?\d*\.\d+|\d+), StdDev=([-+]?\d*\.\d+|\d+).*")
+    __BAND_STATS_PATTERN=re.compile(r'  Minimum=([-+]?\d*\.\d+|\d+), Maximum=([-+]?\d*\.\d+|\d+), Mean=([-+]?\d*\.\d+|\d+), StdDev=([-+]?\d*\.\d+|\d+).*')
     __BAND_NO_DATA_PATTERN=re.compile("  NoData Value=(.*)")
     
     def __init__(self, version=1, command_path=None):
