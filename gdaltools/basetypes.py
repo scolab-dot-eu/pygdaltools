@@ -25,6 +25,8 @@ import subprocess
 import logging
 import os, platform
 import sys
+import re
+
 try:
 	sys_encoding = sys.stdout.encoding or 'utf-8'
 except:
@@ -89,6 +91,24 @@ class Wrapper():
         else:
             cmd = self.CMD
         return os.path.join(self.BASEPATH, cmd)
+
+    def get_version_str(self):
+        self._do_execute([self._get_command(), "--version"])
+        return self.stdout
+    def get_version(self):
+        version_str = self.get_version_str()
+        m = re.match("GDAL (\d+(?:\.\d+(?:\.\d+)?)?(?:[_\-a-zA-Z]+[_\-a-zA-Z0-9\.]*)?),", version_str)
+        if m:
+            return m.group(1)
+        return ''
+
+    def get_version_tuple(self):
+        version_str = self.get_version_str()
+        m = re.match("GDAL ((?P<major>\d+)(?:\.(?P<minor>\d+)(?:\.(?P<patch>\d+)?)?)?(?P<prerelease>[\-_a-zA-Z]+[_\-a-zA-Z0-9\.]*)?),", version_str)
+        if m:
+            groups = {k: v for k, v in m.groupdict().items() if v is not None}
+            return (groups.get('major', ''), groups.get('minor', ''), groups.get('patch', ''), groups.get('prerelease', ''))
+        return ('', '', '', '')
     
     def _do_execute(self, args):
         self.args = args
