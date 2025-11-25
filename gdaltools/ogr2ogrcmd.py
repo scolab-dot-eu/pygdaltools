@@ -50,6 +50,7 @@ class Ogr2ogr(Wrapper):
         self._layer_creation_options_internal = {}
         self._config_options = {}
         self._config_options_internal = {}
+        self._open_options = {}
         self.geom_type = None
         self.encoding = None
         self.preserve_fid = None
@@ -175,6 +176,20 @@ class Ogr2ogr(Wrapper):
     def layer_creation_options(self, layer_creation_options):
         self._layer_creation_options = layer_creation_options
 
+    @property
+    def open_options(self):
+        """
+        Sets open options, expressed as a dict of options such as
+        {"AUTODETECT_TYPE": "YES", "KEEP_SOURCE_COLUMNS": "YES"}
+        """
+        result = self._open_options.copy()
+        result.update(self._open_options)
+        return result
+    
+    @open_options.setter
+    def open_options(self, open_options):
+        self._open_options = open_options
+
     def set_encoding(self, encoding):
         """
         Sets the encoding used to read and write Shapefiles. You MUST ALWAYS
@@ -241,7 +256,13 @@ class Ogr2ogr(Wrapper):
     @config_options.setter
     def config_options(self, options):
         self._config_options = options
-
+    
+    def _is_csv_input(self):
+        """
+        Check if input is a CSV file in order to add open options to args
+        """
+        return isinstance(self.in_ds, FileConnectionString) and self.in_ds.encode().lower().endswith('.csv')
+    
     def execute(self):
         args = [self._get_command()]
         config_options = self.config_options
@@ -286,6 +307,9 @@ class Ogr2ogr(Wrapper):
                 args.extend(["-lco", key+"="+value])
         for key, value in config_options.items():
             args.extend(["--config", key, value])
+        if self._is_csv_input():
+            for key, value in self._open_options.items():
+                args.extend(["-oo", key+"="+value])
 
         if self.out_table:
             out_table = self.out_table
