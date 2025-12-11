@@ -153,4 +153,4 @@ A - They can be used, the library allows specifying the path to the command to u
 
 ## Authors
 
-Cesar Martinez Izquierdo - [Scolab](http://scolab.es)
+Cesar Martinez Izquierdo - [Scolab](http://www.scolab.es)
