@@ -2,7 +2,7 @@
 --requirement requirements.txt
 
 # Testing
-pytest==6.2.5
+pytest==9.0.3
 mock==5.0.0
 
 # Linting
