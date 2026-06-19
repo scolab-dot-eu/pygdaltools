@@ -157,7 +157,7 @@ def test_shape_encoding(ogr, tmpdir, tmp_sqlite):
     out_shp = tmpdir.join("pointsutf8_02.shp")
     ogr.set_output(str(out_shp))
     ogr.set_encoding("ISO-8859-1")
-    output = ogr.execute()
+    ogr.execute()
     assert ogr.returncode == 0
     
     assert out_shp.check(file=1)

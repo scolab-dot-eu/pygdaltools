@@ -21,10 +21,7 @@ from __future__ import unicode_literals
 @author: Cesar Martinez Izquierdo - Scolab <http://scolab.es>
 '''
 import logging
-import re
-import os
-from .basetypes import GdalToolsError, Wrapper, ConnectionString, FileConnectionString
-import io
+from .basetypes import Wrapper, ConnectionString, FileConnectionString
 
 def gdalsrsinfo(raster_path, **flags):
     """

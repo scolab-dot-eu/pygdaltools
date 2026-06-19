@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 '''
 import logging
 import re
-import os
 from .basetypes import GdalToolsError, Wrapper, ConnectionString, FileConnectionString
 import io
 

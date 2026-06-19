@@ -21,7 +21,6 @@
 '''
 
 from . import ogr2ogrcmd
-from . basetypes import FileConnectionString, PgConnectionString
 
 def ogr2ogr(version=1):
     return ogr2ogrcmd.Ogr2ogr(version)

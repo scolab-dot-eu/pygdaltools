@@ -139,6 +139,10 @@ print info.execute()
 print info.get_raster_stats()
 ```
 
+## Development
+
+See [DEVEL.md](DEVEL.md) for local setup, testing, and publishing instructions.
+
 ## FAQ
 
 Nobody asked yet, but just in case.

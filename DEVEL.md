@@ -1,81 +1,101 @@
-# Developer information
+# Developer guide
 
-## Dependences
+## Requirements
 
-You can install the development dependences by running
+- Python 3.9+ for the development toolchain (3.11 recommended)
+- GDAL/OGR command line tools installed on the system (`gdal-bin` on Debian/Ubuntu)
+
+The library itself targets Python 3.7+ and has no Python dependencies at runtime.
+
+## Development dependencies
+
+Development dependencies are declared in `pyproject.toml` under
+`[project.optional-dependencies.dev]` (pytest, ruff, build, tox, twine).
+
+The `requirements-dev.txt` file is a convenience wrapper that installs the
+project in editable mode with those extras:
 
 ```
+-e .[dev]
+```
+
+## Setup
+
+Create and activate a virtualenv inside the project (`.venv` is ignored by git):
+
+```bash
+cd pygdaltools
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip setuptools wheel
 pip install -r requirements-dev.txt
 ```
 
-## Installing
+If `python3 -m venv` is not available on your system, use `virtualenv` instead:
 
-To sdist-package, install and test your project against Python2.6 and Python2.7, just type:
+```bash
+virtualenv -p python3.11 .venv
+source .venv/bin/activate
+pip install --upgrade pip setuptools wheel
+pip install -r requirements-dev.txt
 ```
-tox
+
+Equivalent command without the requirements file:
+
+```bash
+pip install -e ".[dev]"
 ```
 
 ## Running tests
 
-```
-paver test all
-```
-
-## Localy installing the package
-
-```
-pip install -e .
+```bash
+pytest
 ```
 
-## Creating source distributions
+Run the test suite across multiple Python versions:
 
-```
-python setup.py sdist
-```
-
-## Creating binary distributions (Wheels)
-
-```
-python setup.py bdist_wheel --universal
+```bash
+tox
 ```
 
-## Creating both soure & binary distributions (Wheels)
+## Linting
 
-```
-python setup.py sdist bdist_wheel --universal
-```
-
-## Check distribution before uploading to Pypi
-
-```
-twine check dist/*1.3*
+```bash
+ruff check gdaltools tests
 ```
 
-## Uploading the distribution to PyPi
+## Building distributions
 
+```bash
+python -m build
+twine check dist/*
 ```
+
+Artifacts are written to `dist/`.
+
+## Publishing
+
+### PyPI
+
+1. Bump the version in `gdaltools/metadata.py`.
+2. Create a GitHub release for that tag.
+3. The `Publish to PyPI` workflow publishes the release artifacts using [trusted publishing](https://docs.pypi.org/trusted-publishers/).
+
+You can also trigger the workflow manually from the Actions tab.
+
+Local upload (requires a PyPI API token):
+
+```bash
+python -m build
 twine upload dist/*
 ```
 
-You can specify the version to upload:
+### AWS CodeArtifact
 
+Use the `pygdaltools - Build and Push` workflow from the Actions tab, or upload manually after logging in with the AWS CLI:
+
+```bash
+python -m build
+aws codeartifact login --tool twine --repository eop --domain <domain> --domain-owner <owner> --region eu-west-3
+twine upload --repository codeartifact dist/*
 ```
-twine upload dist/*1.0*
-```
-
-You should first use the test repository:
-
-```
-twine upload -r pypitest dist/*1.0*
-```
-
-## Additional info
-
-Have a look to the Packaging and Distributing Projects tutorial:
-
-https://packaging.python.org/distributing/
-
-The package has been generated following seafisk's Python Project Template:
-
-https://github.com/seanfisk/python-project-template
-

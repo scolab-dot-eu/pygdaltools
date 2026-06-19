@@ -8,11 +8,11 @@ Information describing the project.
 package = 'pygdaltools'
 project = 'pygdaltools'
 project_no_spaces = project.replace(' ', '')
-version = '1.4.3'
+version = '1.5.0'
 description = """Python wrapper for Gdal/OGR command line tools"""
 authors = ['Cesar Martinez Izquierdo - SCOLAB']
 authors_string = ', '.join(authors)
 emails = []
-license = 'AGPL3'
+license = 'AGPL-3.0-or-later'
 copyright = '2016 ' + authors_string
 url = 'https://github.com/scolab-dot-eu/pygdaltools'

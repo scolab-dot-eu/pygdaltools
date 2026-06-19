@@ -24,7 +24,6 @@ from __future__ import unicode_literals
 
 
 import logging
-import os
 from .basetypes import Wrapper, ConnectionString, FileConnectionString
 
 

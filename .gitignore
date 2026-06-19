@@ -8,6 +8,12 @@ __pycache__/
 build/
 dist/
 .tox/
+.venv/
+.pip_deps/
 
 # testing
 .cache/
+.pytest_cache/
+
+# linting
+.ruff_cache/
