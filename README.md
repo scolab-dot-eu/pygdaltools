@@ -121,6 +121,15 @@ gdaltools.Wrapper.BASEPATH = "C/Program Files/Gdal/bin"
 print gdaltools.gdalinfo("mywindowsraster.tif")
 ```
 
+When multiple GDAL versions are installed, binaries may be prefixed (for example `gdal3.4-gdalinfo` instead of `gdalinfo`).
+Set `CMD_PREFIX` before using the library to prepend that prefix to every command name:
+
+```
+import gdaltools
+gdaltools.Wrapper.CMD_PREFIX = "gdal3.4-"
+print gdaltools.gdalinfo("myraster.tif")  # runs /usr/bin/gdal3.4-gdalinfo
+```
+
 You can also use lower level API for setting the full path for specific commands:
 
 ```

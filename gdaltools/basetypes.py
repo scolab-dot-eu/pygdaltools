@@ -78,6 +78,7 @@ class FileConnectionString():
 
 class Wrapper():
     BASEPATH = "/usr/bin"
+    CMD_PREFIX = ""
     CMD = None
     def __init__(self, version=1, command_path=None):
         self.version = version
@@ -87,9 +88,9 @@ class Wrapper():
         if self._command:
             return self._command
         if platform.system()=='Windows':
-            cmd = self.CMD + ".exe"
+            cmd = self.CMD_PREFIX + self.CMD + ".exe"
         else:
-            cmd = self.CMD
+            cmd = self.CMD_PREFIX + self.CMD
         return os.path.join(self.BASEPATH, cmd)
 
     def get_version_str(self):
